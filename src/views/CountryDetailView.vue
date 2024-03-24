@@ -1,17 +1,34 @@
 <template>
-  <div v-if="country" class="max-w-4xl mx-auto p-6">
+  <div class="max-w-4xl mx-auto p-6">
     <router-link
       class="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-800"
       :to="{ name: 'home' }"
     >
+      <svg
+        class="h-5 w-5"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
       <span>Back to Homepage</span>
     </router-link>
     <div class="mt-8 flex flex-col lg:flex-row lg:space-x-8">
       <div class="flex-1">
         <h1 class="text-5xl font-bold">{{ country.name.common }}</h1>
         <div class="mt-4 flex space-x-2">
-          <badge variant="secondary">{{ country.name.official }}</badge>
-          <badge variant="default">{{ country.name.native.ind.common }}</badge>
+          <span
+            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800"
+          >
+            {{ country.name.official }}
+          </span>
+          <span
+            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800"
+          >
+            {{ country.name.native.ind.common }}
+          </span>
         </div>
         <div class="mt-6">
           <h2 class="text-lg font-semibold">LatLong</h2>
@@ -19,39 +36,32 @@
         </div>
         <div class="mt-6">
           <h2 class="text-lg font-semibold">Calling Code</h2>
-          <p class="text-2xl font-bold text-blue-600">{{ country.idd.suffixes[0] }}</p>
+          <p class="text-2xl font-bold text-blue-600">
+            +{{ country.idd.root }} {{ country.idd.suffixes[0] }}
+          </p>
           <p class="text-sm text-gray-500">
             {{ country.idd.suffixes.length }} countries with this calling code
           </p>
         </div>
       </div>
       <div class="flex-1 mt-8 lg:mt-0">
-        <card class="w-full">
-          <card-content>
-            <div class="space-y-4">
-              <div>
-                <h2 class="text-lg font-semibold">Capital: {{ country.capital[0] }}</h2>
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold">Region: {{ country.region }}</h2>
-              </div>
-              <div>
-                <h2 class="text-lg font-semibold">Subregion: {{ country.subregion }}</h2>
-              </div>
-            </div>
-          </card-content>
-        </card>
+        <div class="mt-6">
+          <h2 class="text-lg font-semibold">Capital: {{ country.capital[0] }}</h2>
+        </div>
+        <div class="mt-6">
+          <h2 class="text-lg font-semibold">Region: {{ country.region }}</h2>
+        </div>
+        <div class="mt-6">
+          <h2 class="text-lg font-semibold">Subregion: {{ country.subregion }}</h2>
+        </div>
         <div class="mt-6">
           <h2 class="text-lg font-semibold">Currency</h2>
-          <p class="text-2xl font-bold text-blue-600">{{ country.currencies.IDR.symbol }}</p>
-          <p class="text-sm text-gray-500">
-            {{ Object.keys(country.currencies).length }} countries with this currency
-          </p>
+          <p class="text-2xl font-bold text-blue-600">{{ Object.keys(country.currencies)[0] }}</p>
+          <p class="text-sm text-gray-500">1 country with this currency</p>
         </div>
       </div>
     </div>
   </div>
-  <div v-else class="max-w-4xl mx-auto p-6">Loading...</div>
 </template>
 
 <script>
@@ -63,11 +73,9 @@ export default {
     }
   },
   created() {
-    // Memeriksa apakah ada data negara yang diteruskan melalui properti $route
     if (this.$route.params.countryData) {
       this.country = this.$route.params.countryData
     } else {
-      // Jika tidak ada, lakukan permintaan ke API dengan menggunakan countryName dari route params
       this.fetchCountryDetails(this.$route.params.countryName)
     }
   },

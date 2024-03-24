@@ -22,7 +22,9 @@
       class="mt-4 w-full max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden"
     >
       <div v-if="loading" class="p-4 text-center">Loading...</div>
-      <div v-else-if="searchResults.length === 0" class="p-4 text-center">No results found.</div>
+      <div v-else-if="searchResults.length === 0 && !loading" class="p-4 text-center">
+        Data not found.
+      </div>
       <ul v-else class="divide-y divide-gray-200">
         <li
           v-for="(country, index) in searchResults.slice(0, 5)"
@@ -39,7 +41,7 @@
 
 <script>
 import IconSearch from '@/components/icons/IconSearch.vue'
-import { debounce } from 'lodash' // Import fungsi debounce dari lodash
+import { debounce } from 'lodash'
 import { useRouter } from 'vue-router'
 
 export default {
@@ -61,7 +63,7 @@ export default {
         try {
           const response = await fetch(`https://restcountries.com/v3.1/name/${this.searchQuery}`)
           const data = await response.json()
-          console.log(data)
+          //   console.log(data)
           this.searchResults = data
           this.showSuggestions = true
         } catch (error) {
